@@ -1,7 +1,7 @@
 # ChatGPT Project Context — VulnScribe
 
 **Purpose:** Durable handoff context for ChatGPT and Codex.  
-**Status:** Draft for user review; not yet reconciled against the complete local working tree.  
+**Status:** Approved as the shared context baseline by the user on 2026-10-23; local working tree reconciliation remains pending.  
 **Last updated:** 2026-10-23
 
 ## 1. Why this file exists
@@ -160,7 +160,7 @@ Before treating this file as the canonical project context:
 
 ---
 
-**Authority note:** Until the user approves this draft and it is reconciled with the local working tree, this document is a proposal and handoff snapshot—not a replacement for verified source code, local instructions, or explicit user decisions.
+**Authority note:** The user approved this document as the shared context baseline on 2026-10-23. Historical and unverified details remain labeled as such. Local working-tree reconciliation is still pending; this document does not replace verified source code, local instructions, or explicit future user decisions.
 
 
 ## 11. Expanded conversation history and project intent
