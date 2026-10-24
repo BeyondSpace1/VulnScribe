@@ -21,9 +21,9 @@ A status must be supported by a reviewable record or actual check output. Do not
 
 | ID | Task | Status | Acceptance evidence |
 |---|---|---|---|
-| VS-001 | Verify the merged application baseline | PROPOSED | Focused API tests, full applicable tests, Ruff, and whitespace check recorded against an exact commit; explain any excluded tests. |
+| VS-001 | Verify the merged application baseline | VERIFIED | At `9a5543726353f7cef4ad49561842b25f805e8326`: API tests 16 passed; full applicable suite 16 passed; Ruff and `git diff --check` passed. One Starlette/httpx deprecation warning; no scanner-accuracy tests were present in that baseline. |
 | VS-002 | Establish scanner evaluation fixtures and labeling | PROPOSED | Reviewed authorized fixture provenance, expected findings and non-findings, and documented limitations. |
-| VS-003 | Build scanner regression and accuracy tests | PROPOSED | Tests cover representative supported languages, important edge cases, line/evidence quality, false positives, and false negatives. |
+| VS-003 | Build scanner regression and accuracy tests | VERIFIED | 44 focused synthetic scanner regression cases passed; API tests 16 passed; full suite 60 passed; Ruff and whitespace check passed on `test/scanner-regression`. Covers rule candidates, safe controls, language routing, evidence, and known false-positive limitations. This is not a precision/recall or accuracy claim. The repository verification script invocation was blocked by PowerShell execution policy; equivalent direct checks used existing executables. |
 | VS-004 | Normalize finding and report behavior | PROPOSED | Agreed output contract and regression tests for evidence, validation state, report escaping, and warnings. |
 | VS-005 | Document supported languages/rules and known gaps | PROPOSED | Documentation matches inspected implementation and explicitly describes unsupported cases. |
 | VS-006 | Decide intended deployment audience and security gate | PROPOSED | Recorded owner decision, scoped threat model, and verifiable controls for that audience. |
