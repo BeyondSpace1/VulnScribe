@@ -67,6 +67,11 @@ class HttpResponseScanner(BaseScanner):
 
         findings = []
         for header, (title, desc, severity) in self.CHECKS.items():
+            if (
+                header == "strict-transport-security"
+                and target.metadata.get("transport_scheme") != "https"
+            ):
+                continue
             if header in headers:
                 continue
 

@@ -30,12 +30,29 @@ def scan_code(file: Path = typer.Argument(..., exists=True, readable=True),
 
 
 @app.command("scan-http")
-def scan_http(file: Path = typer.Argument(..., exists=True, readable=True),
-              out: Path = typer.Option(Path("report.md"), "--out", "-o"),
-              format: str = typer.Option("markdown", "--format")):
+def scan_http(
+    file: Path = typer.Argument(..., exists=True, readable=True),
+    out: Path = typer.Option(Path("report.md"), "--out", "-o"),
+    format: str = typer.Option("markdown", "--format"),
+    transport_scheme: str | None = typer.Option(
+        None,
+        "--transport-scheme",
+        help="Transport scheme for the captured response (http or https); required to evaluate HSTS.",
+    ),
+):
     if format not in {"json", "markdown"}:
         raise typer.BadParameter("format must be json or markdown")
-    result = registry.run(http_target(file.name, file.read_text(encoding="utf-8", errors="replace")))
+    if transport_scheme is not None:
+        transport_scheme = transport_scheme.lower()
+        if transport_scheme not in {"http", "https"}:
+            raise typer.BadParameter("transport-scheme must be http or https")
+    result = registry.run(
+        http_target(
+            file.name,
+            file.read_text(encoding="utf-8", errors="replace"),
+            transport_scheme,
+        )
+    )
     write_result(result, out, format)
 
 

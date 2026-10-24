@@ -1,5 +1,6 @@
 from datetime import UTC, datetime
 from enum import StrEnum
+from typing import Literal
 from uuid import uuid4
 
 from pydantic import BaseModel, Field, field_validator
@@ -72,6 +73,16 @@ class CodeScanRequest(BaseModel):
 class HttpScanRequest(BaseModel):
     raw_response: str = Field(min_length=1, max_length=200_000)
     target_label: str = Field(default="pasted-http-response", max_length=255)
+    transport_scheme: Literal["http", "https"] | None = Field(
+        default=None,
+        description="Transport scheme for the captured response; required to evaluate HSTS applicability.",
+    )
+
+    @field_validator("transport_scheme", mode="before")
+    @classmethod
+    def normalize_transport_scheme(cls, value: str | None) -> str | None:
+        return value.lower() if isinstance(value, str) else value
+
     @field_validator("raw_response")
     @classmethod
     def response_must_not_be_whitespace(cls, value: str) -> str:

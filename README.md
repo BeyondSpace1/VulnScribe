@@ -24,10 +24,12 @@ vulnscribe scan-http .\samples\http_response.txt --format markdown --out report.
 pytest
 ```
 
+For HTTP-response scans, pass `--transport-scheme https` only when the captured response is known to have been received over HTTPS. Use `--transport-scheme http` when the transport was HTTP. If omitted, transport is treated as unknown, missing-HSTS findings are suppressed, and the report includes a warning. The scheme is supplied capture metadata; VulnScribe does not infer it from the raw response or contact the target.
+
 ## API
 - `GET /health`
 - `POST /api/v1/scans/code` JSON: `{"filename":"app.php","source":"...","language":"php"}`
-- `POST /api/v1/scans/http` JSON: `{"raw_response":"HTTP/1.1 200 OK\\r\\n..."}`
+- `POST /api/v1/scans/http` JSON: `{"raw_response":"HTTP/1.1 200 OK\\r\\n...","transport_scheme":"https"}` (`transport_scheme` is optional; only use `https` when known from capture context)
 
 ## Important design choices
 - Deterministic rules create candidate findings; AI is not required for V1.

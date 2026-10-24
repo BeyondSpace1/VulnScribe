@@ -252,17 +252,18 @@ def http_scanner():
     return HttpResponseScanner()
 
 
-def http_target(response: str) -> ScanTarget:
+def http_target(response: str, transport_scheme: str | None = None) -> ScanTarget:
     return ScanTarget(
         input_type=InputType.HTTP_RESPONSE,
         filename="synthetic-response.txt",
         source=response,
+        metadata={"transport_scheme": transport_scheme or "unknown"},
     )
 
 
 def test_http_response_reports_each_missing_security_header_with_evidence(http_scanner):
     response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nsynthetic body"
-    findings = http_scanner.scan(http_target(response))
+    findings = http_scanner.scan(http_target(response, transport_scheme="https"))
 
     assert {item.rule_id for item in findings} == set(HTTP_RULES.values())
     for item in findings:
@@ -287,7 +288,23 @@ def test_http_response_with_all_headers_emits_no_missing_header_candidates(http_
         "synthetic body"
     )
 
-    assert http_scanner.scan(http_target(response)) == []
+    assert http_scanner.scan(http_target(response, transport_scheme="https")) == []
+
+
+@pytest.mark.parametrize(
+    "transport_scheme",
+    [None, "http"],
+    ids=["unknown-transport", "plain-http"],
+)
+def test_missing_hsts_is_not_reported_without_explicit_https_context(
+    http_scanner, transport_scheme
+):
+    response = "HTTP/1.1 200 OK\\r\\nContent-Type: text/plain\\r\\n\\r\\nsynthetic body"
+    findings = http_scanner.scan(http_target(response, transport_scheme=transport_scheme))
+
+    assert "VS-HTTP-STRICTTRANSPORTSECURITY" not in {
+        item.rule_id for item in findings
+    }
 
 
 @pytest.mark.parametrize(
