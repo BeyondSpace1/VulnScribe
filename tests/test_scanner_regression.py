@@ -299,7 +299,7 @@ def test_http_response_with_all_headers_emits_no_missing_header_candidates(http_
 def test_missing_hsts_is_not_reported_without_explicit_https_context(
     http_scanner, transport_scheme
 ):
-    response = "HTTP/1.1 200 OK\\r\\nContent-Type: text/plain\\r\\n\\r\\nsynthetic body"
+    response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nsynthetic body"
     findings = http_scanner.scan(http_target(response, transport_scheme=transport_scheme))
 
     assert "VS-HTTP-STRICTTRANSPORTSECURITY" not in {
