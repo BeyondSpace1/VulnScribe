@@ -4,9 +4,9 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 
+from vulnscribe import __version__
 from vulnscribe.api.middleware import RequestBodyLimitMiddleware
 from vulnscribe.core import ScannerRegistry, code_target, http_target
-from vulnscribe import __version__
 from vulnscribe.models import CodeScanRequest, HttpScanRequest, ScanResult
 from vulnscribe.reporting import to_markdown
 
