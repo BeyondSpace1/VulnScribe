@@ -1,6 +1,8 @@
 # VulnScribe — Local Preview
 
-Local-first, evidence-first vulnerability analysis preview. Use the browser interface or CLI to scan supported source snippets and supplied raw HTTP responses, review candidate findings, and export JSON/Markdown reports.
+> **Preview candidate:** `0.2.0-alpha.1` (Python package version `0.2.0a1`). This is not a published release yet.
+
+Local-first, evidence-first vulnerability analysis preview. Use the browser interface or CLI to scan supported source snippets and supplied raw HTTP responses, review candidate findings, and export JSON/Markdown reports. The current branch is preparing the first `0.2.0-alpha.1` preview candidate; publication follows exact-candidate verification.
 
 **Safety boundary:** this version does not contact live targets, execute uploaded code, clone repositories, or perform active tests. Only analyze artifacts you are authorized to handle. Findings are candidates, not proof of exploitability.
 
