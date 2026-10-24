@@ -30,6 +30,8 @@ A status must be supported by a reviewable record or actual check output. Do not
 | VS-007 | Define release/support policy before V1.0 | PROPOSED | Owner-approved SemVer, compatibility, support, artifact, and security-fix policy. |
 | VS-008 | Make HSTS evaluation depend on explicit transport context | IN_PROGRESS | Missing HSTS is reported only when the captured response is explicitly marked HTTPS; unknown/HTTP cases explain the skipped evaluation; API and CLI behavior is covered by regression tests. |
 | VS-009 | Reduce Python eval/exec false positives with AST detection | IN_PROGRESS | Direct calls detected with evidence and source locations; comments and string literals do not trigger findings; malformed Python is handled conservatively; supported non-Python rules remain unchanged. |
+| VS-010 | Deliver a local browser-based scan and report preview | IN_PROGRESS | Local UI supports source/HTTP scans, evidence review, safe DOM rendering, JSON/Markdown downloads, and local-only processing; API/UI tests pass. |
+| VS-011 | Add structured bug reporting and alpha-candidate metadata | IN_PROGRESS | GitHub Issue Form warns against sharing secrets; package/API version strings agree; release notes and limitations are documented; no release is claimed before verification. |
 
 ## Working rules
 
