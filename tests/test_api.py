@@ -248,3 +248,78 @@ def test_code_endpoint_rejects_duplicate_content_length():
 
     assert response.status_code == 400
     assert response.json()["detail"] == "Invalid Content-Length header"
+
+
+def test_http_endpoint_skips_hsts_when_transport_scheme_is_unknown():
+    response = client.post(
+        "/api/v1/scans/http",
+        json={
+            "target_label": "unknown-scheme-test",
+            "raw_response": "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\n",
+        },
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+    rule_ids = {finding["rule_id"] for finding in data["findings"]}
+
+    assert data["target"]["transport_scheme"] == "unknown"
+    assert "VS-HTTP-STRICTTRANSPORTSECURITY" not in rule_ids
+    assert any(
+        "HSTS applicability was not evaluated because transport_scheme is unknown"
+        in warning
+        for warning in data["warnings"]
+    )
+
+
+def test_http_endpoint_reports_missing_hsts_for_explicit_https():
+    response = client.post(
+        "/api/v1/scans/http",
+        json={
+            "target_label": "https-missing-hsts-test",
+            "transport_scheme": "HTTPS",
+            "raw_response": "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\n",
+        },
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+    rule_ids = {finding["rule_id"] for finding in data["findings"]}
+
+    assert data["target"]["transport_scheme"] == "https"
+    assert "VS-HTTP-STRICTTRANSPORTSECURITY" in rule_ids
+
+
+def test_http_endpoint_skips_hsts_for_explicit_http():
+    response = client.post(
+        "/api/v1/scans/http",
+        json={
+            "target_label": "http-scheme-test",
+            "transport_scheme": "http",
+            "raw_response": "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\n",
+        },
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+    rule_ids = {finding["rule_id"] for finding in data["findings"]}
+
+    assert data["target"]["transport_scheme"] == "http"
+    assert "VS-HTTP-STRICTTRANSPORTSECURITY" not in rule_ids
+    assert any(
+        "browsers ignore HSTS received over insecure transport" in warning
+        for warning in data["warnings"]
+    )
+
+
+def test_http_endpoint_rejects_unsupported_transport_scheme():
+    response = client.post(
+        "/api/v1/scans/http",
+        json={
+            "target_label": "invalid-scheme-test",
+            "transport_scheme": "ftp",
+            "raw_response": "HTTP/1.1 200 OK\r\n\r\n",
+        },
+    )
+
+    assert response.status_code == 422

@@ -28,6 +28,7 @@ A status must be supported by a reviewable record or actual check output. Do not
 | VS-005 | Document supported languages/rules and known gaps | PROPOSED | Documentation matches inspected implementation and explicitly describes unsupported cases. |
 | VS-006 | Decide intended deployment audience and security gate | PROPOSED | Recorded owner decision, scoped threat model, and verifiable controls for that audience. |
 | VS-007 | Define release/support policy before V1.0 | PROPOSED | Owner-approved SemVer, compatibility, support, artifact, and security-fix policy. |
+| VS-008 | Make HSTS evaluation depend on explicit transport context | IN_PROGRESS | Missing HSTS is reported only when the captured response is explicitly marked HTTPS; unknown/HTTP cases explain the skipped evaluation; API and CLI behavior is covered by regression tests. |
 
 ## Working rules
 

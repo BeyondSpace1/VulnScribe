@@ -32,7 +32,13 @@ def scan_code(request: CodeScanRequest, format: str = "json"):
 
 @app.post("/api/v1/scans/http")
 def scan_http(request: HttpScanRequest, format: str = "json"):
-    result = registry.run(http_target(request.target_label, request.raw_response))
+    result = registry.run(
+        http_target(
+            request.target_label,
+            request.raw_response,
+            request.transport_scheme,
+        )
+    )
     if format == "markdown":
         return PlainTextResponse(to_markdown(result), media_type="text/markdown")
     if format != "json":
