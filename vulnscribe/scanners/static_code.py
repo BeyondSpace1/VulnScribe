@@ -114,6 +114,48 @@ class StaticCodeScanner(BaseScanner):
             if language not in rule["langs"]:
                 continue
 
+            # AST-based detection for direct Python eval()/exec() calls.
+            if rule["id"] == "VS-PY-001" and language == "python":
+                if tree is None:
+                    continue
+
+                for node in ast.walk(tree):
+                    if not (
+                        isinstance(node, ast.Call)
+                        and isinstance(node.func, ast.Name)
+                        and node.func.id in {"eval", "exec"}
+                    ):
+                        continue
+
+                    line_start = node.lineno
+                    line_end = getattr(node, "end_lineno", line_start)
+                    evidence = " ".join(
+                        source_lines[line_start - 1:line_end]
+                    ).strip()[:500]
+
+                    cwe_num = rule["cwe"].split("-")[-1]
+                    findings.append(
+                        Finding(
+                            rule_id=rule["id"],
+                            title=rule["title"],
+                            description=rule["desc"],
+                            severity=rule["severity"],
+                            confidence=rule["confidence"],
+                            cwe_id=rule["cwe"],
+                            owasp_category=rule["owasp"],
+                            affected_component=target.filename,
+                            line_start=line_start,
+                            line_end=line_end,
+                            evidence=evidence,
+                            remediation=rule["fix"],
+                            references=[
+                                f"https://cwe.mitre.org/data/definitions/{cwe_num}.html"
+                            ],
+                            scanner=self.scanner_name,
+                        )
+                    )
+                continue
+
             # AST-based detection for subprocess shell=True.
             if rule["id"] == "VS-PY-003" and language == "python":
                 if tree is None:

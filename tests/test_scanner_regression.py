@@ -229,13 +229,36 @@ def test_static_constant_innerhtml_is_a_candidate_not_a_confirmed_vulnerability(
     assert finding.line_start == 1
 
 
-def test_comment_text_can_produce_a_candidate_from_a_line_pattern_rule():
-    """Line-pattern checks can match comments; the result remains a candidate."""
+def test_comment_text_does_not_produce_a_python_eval_candidate():
     findings = scan_source("python", "# eval(synthetic_value)\n")
 
+    assert "VS-PY-001" not in {item.rule_id for item in findings}
+
+
+def test_string_literal_text_does_not_produce_a_python_eval_candidate():
+    source = 'message = "eval(synthetic_value) and exec(synthetic_value)"\n'
+    findings = scan_source("python", source)
+
+    assert "VS-PY-001" not in {item.rule_id for item in findings}
+
+
+def test_python_exec_call_emits_an_evidence_backed_candidate():
+    source = "value = 1\nexec(synthetic_code)\n"
+    findings = scan_source("python", source, "synthetic.py")
+
     finding = next(item for item in findings if item.rule_id == "VS-PY-001")
-    assert finding.evidence == "# eval(synthetic_value)"
+    assert finding.evidence == "exec(synthetic_code)"
+    assert finding.affected_component == "synthetic.py"
+    assert finding.line_start == 2
+    assert finding.line_end == 2
     assert finding.validation_status == "needs_review"
+
+
+def test_invalid_python_does_not_fall_back_to_eval_regex():
+    source = "# eval(synthetic_value)\nif :\n    pass\n"
+    findings = scan_source("python", source)
+
+    assert "VS-PY-001" not in {item.rule_id for item in findings}
 
 
 HTTP_RULES = {
@@ -299,7 +322,7 @@ def test_http_response_with_all_headers_emits_no_missing_header_candidates(http_
 def test_missing_hsts_is_not_reported_without_explicit_https_context(
     http_scanner, transport_scheme
 ):
-    response = "HTTP/1.1 200 OK\\r\\nContent-Type: text/plain\\r\\n\\r\\nsynthetic body"
+    response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nsynthetic body"
     findings = http_scanner.scan(http_target(response, transport_scheme=transport_scheme))
 
     assert "VS-HTTP-STRICTTRANSPORTSECURITY" not in {
