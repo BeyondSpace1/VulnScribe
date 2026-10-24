@@ -2,7 +2,9 @@
 
 ## Current release state
 
-**No actual release is recorded in this file.** The reviewed repository baseline has package metadata version `0.1.0` in `pyproject.toml`; that metadata is not proof of a published release. The merge commit that established the MVP baseline is also not a release by itself. Git tags/releases were not verified as part of this documentation review, so their existence must not be inferred from this statement.
+**No actual release is recorded in this file.** The current branch prepares a preview candidate with Python package metadata version `0.2.0a1`, corresponding to the proposed GitHub pre-release label/tag `v0.2.0-alpha.1`. The candidate is not yet verified or published. Do not create a tag, upload an artifact, or declare a release until exact-head tests, linting, package checks, release-note review, and explicit publication approval are complete.
+
+The previous package metadata version `0.1.0` and merge commits were development state, not proof of a published release.
 
 ## Proposed release policy
 

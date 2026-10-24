@@ -1,0 +1,66 @@
+name: Bug report
+description: Report a reproducible issue in the VulnScribe preview.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve VulnScribe. Issues may be public. **Do not include source code you cannot disclose, raw HTTP responses, credentials, API keys, tokens, personal data, private reports, or unredacted logs.** The MVP does not require uploads or telemetry; attach only sanitized, minimal reproduction details.
+  - type: input
+    id: app-version
+    attributes:
+      label: VulnScribe version or commit
+      description: Use the version shown in the interface or provide the commit SHA.
+      placeholder: "0.2.0a1 or a commit SHA"
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Operating system and Python version
+      placeholder: "Windows 11, Python 3.12.x"
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened?
+      description: Briefly describe the unexpected behavior without including sensitive inputs.
+      placeholder: "A concise description of the problem"
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Use synthetic or public sample data where possible.
+      placeholder: |
+        1. Open the local interface
+        2. Paste a minimal synthetic sample
+        3. Run the scan
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      placeholder: "What should have happened?"
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      placeholder: "What happened instead?"
+    validations:
+      required: true
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Sanitized diagnostics (optional)
+      description: Remove secrets, source code, identifiers, and private paths before posting.
+      render: text
+    validations:
+      required: false

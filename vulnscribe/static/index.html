@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#0b1020">
+  <meta name="description" content="Local-first, evidence-first vulnerability analysis for authorized source artifacts and raw HTTP responses.">
+  <title>VulnScribe — Security review, grounded in evidence</title>
+  <link rel="stylesheet" href="/static/app.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <div class="background-grid" aria-hidden="true"></div>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="VulnScribe home">
+      <span class="brand-mark" aria-hidden="true">V</span>
+      <span>Vuln<span class="brand-light">Scribe</span></span>
+    </a>
+    <div class="topbar-right">
+      <span class="local-pill"><span class="pulse"></span> Local workspace</span>
+      <span class="version-pill" id="version-label">preview</span>
+      <a class="top-link" href="/docs" target="_blank" rel="noreferrer">API docs <span aria-hidden="true">↗</span></a>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="eyebrow-line"></span> EVIDENCE-FIRST SECURITY REVIEW</p>
+        <h1>Find the signal.<br><span class="gradient-text">Keep the evidence.</span></h1>
+        <p class="hero-description">Review deterministic security checks against code you are authorized to inspect or a raw HTTP response you already have. Every result is a candidate for human validation—not a verdict.</p>
+        <div class="hero-points">
+          <span><span class="check">✓</span> No code execution</span>
+          <span><span class="check">✓</span> No live-target requests</span>
+          <span><span class="check">✓</span> No automatic CVSS</span>
+        </div>
+      </div>
+      <aside class="hero-card">
+        <div class="orb" aria-hidden="true"><span></span><i></i><b></b></div>
+        <p class="hero-card-kicker">THE VULNSCRIBE PROMISE</p>
+        <p class="hero-card-title">A finding should show its work.</p>
+        <p class="hero-card-copy">Rule, evidence, location, and limitations stay attached to the result so a human can judge what it means.</p>
+        <div class="hero-card-foot"><span class="dot-green"></span> Deterministic checks · Human review</div>
+      </aside>
+    </section>
+
+    <section class="workspace panel">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow muted">WORKSPACE / 01</p>
+          <h2>Choose an input</h2>
+        </div>
+        <span class="input-note"><span class="shield-icon" aria-hidden="true">◆</span> Submitted text is processed by this local service</span>
+      </div>
+
+      <div class="tabs" role="tablist" aria-label="Scan input type">
+        <button class="tab active" id="tab-code" role="tab" aria-selected="true" aria-controls="panel-code" data-tab="code"><span aria-hidden="true">⌘</span> Source code</button>
+        <button class="tab" id="tab-http" role="tab" aria-selected="false" aria-controls="panel-http" data-tab="http"><span aria-hidden="true">⇄</span> HTTP response</button>
+      </div>
+
+      <section id="panel-code" class="tab-panel" role="tabpanel" aria-labelledby="tab-code">
+        <form id="code-form" class="scan-form">
+          <div class="form-row three">
+            <label class="field">
+              <span>Language</span>
+              <select id="language">
+                <option value="">Auto-detect from filename</option>
+                <option value="php">PHP</option>
+                <option value="python">Python</option>
+                <option value="javascript">JavaScript</option>
+                <option value="typescript">TypeScript</option>
+                <option value="go">Go</option>
+              </select>
+            </label>
+            <label class="field filename-field">
+              <span>Filename</span>
+              <input id="filename" type="text" value="pasted-code.py" maxlength="255" autocomplete="off" spellcheck="false">
+            </label>
+            <label class="field file-field">
+              <span>Load local file <small>(up to 500 KB)</small></span>
+              <input id="source-file" type="file" accept=".php,.phtml,.py,.js,.jsx,.ts,.tsx,.go,.txt">
+            </label>
+          </div>
+          <label class="field editor-field">
+            <span>Source input <small id="source-count">0 characters</small></span>
+            <textarea id="source" rows="13" maxlength="500000" required spellcheck="false" autocapitalize="off" autocomplete="off" placeholder="Paste authorized source code here…"></textarea>
+          </label>
+          <div class="form-footer">
+            <p class="microcopy">The scanner reads source as text; it does not run it. Avoid pasting real credentials or unrelated private data.</p>
+            <button type="submit" class="primary-button"><span>Run source scan</span><span aria-hidden="true">→</span></button>
+          </div>
+        </form>
+      </section>
+
+      <section id="panel-http" class="tab-panel hidden" role="tabpanel" aria-labelledby="tab-http">
+        <form id="http-form" class="scan-form">
+          <div class="form-row two">
+            <label class="field">
+              <span>Input label</span>
+              <input id="http-label" type="text" value="pasted-http-response" maxlength="255" autocomplete="off">
+            </label>
+            <label class="field">
+              <span>Known transport scheme</span>
+              <select id="transport-scheme">
+                <option value="unknown">Unknown (recommended if unsure)</option>
+                <option value="https">HTTPS — confirmed from capture context</option>
+                <option value="http">HTTP — confirmed from capture context</option>
+              </select>
+            </label>
+          </div>
+          <label class="field editor-field">
+            <span>Raw HTTP response <small id="http-count">0 characters</small></span>
+            <textarea id="raw-response" rows="13" maxlength="200000" required spellcheck="false" autocapitalize="off" autocomplete="off" placeholder="HTTP/1.1 200 OK&#10;Content-Type: text/html&#10;&#10;&lt;html&gt;…"></textarea>
+          </label>
+          <div class="form-footer">
+            <p class="microcopy">VulnScribe parses only the supplied response. It never requests the host. HSTS is evaluated only when HTTPS is explicitly known.</p>
+            <button type="submit" class="primary-button"><span>Run HTTP scan</span><span aria-hidden="true">→</span></button>
+          </div>
+        </form>
+      </section>
+    </section>
+
+    <section id="activity" class="activity panel hidden" aria-live="polite">
+      <div class="activity-icon" id="activity-icon" aria-hidden="true">✓</div>
+      <div class="activity-copy"><strong id="activity-title">Ready</strong><p id="activity-message">Your scan result will appear below.</p></div>
+      <div class="spinner hidden" id="spinner" aria-hidden="true"></div>
+    </section>
+
+    <section id="results" class="results hidden">
+      <div class="results-header">
+        <div>
+          <p class="eyebrow muted">RESULTS / 02</p>
+          <h2>Review findings</h2>
+          <p class="results-subtitle" id="result-caption">Candidate findings require human validation.</p>
+        </div>
+        <div class="export-actions">
+          <button type="button" class="secondary-button" id="download-json" disabled>↓ JSON</button>
+          <button type="button" class="secondary-button" id="download-markdown" disabled>↓ Markdown</button>
+        </div>
+      </div>
+      <div id="summary-grid" class="summary-grid"></div>
+      <div id="warnings" class="warnings hidden"></div>
+      <div id="findings-list" class="findings-list"></div>
+      <p class="results-foot"><span aria-hidden="true">ⓘ</span> No finding is confirmed automatically. No findings does not mean an artifact is secure.</p>
+    </section>
+
+    <section class="bottom-grid">
+      <article class="info-card">
+        <div class="info-icon" aria-hidden="true">◎</div>
+        <div><h3>Evidence, not certainty</h3><p>Findings include the triggering rule and evidence. Pattern matches can be false positives or miss issues; validate in context.</p></div>
+      </article>
+      <article class="info-card bug-card">
+        <div class="info-icon bug-icon" aria-hidden="true">⌁</div>
+        <div><h3>Help improve the preview</h3><p>Found a reproducible bug? Open a structured issue. Do not attach secrets, private source, raw scan artifacts, or access tokens.</p><a class="inline-link" href="https://github.com/BeyondSpace1/VulnScribe/issues/new?template=bug_report.yml" target="_blank" rel="noopener noreferrer">Report a bug on GitHub <span aria-hidden="true">↗</span></a></div>
+      </article>
+    </section>
+
+    <footer class="footer">
+      <span>VulnScribe <span id="footer-version">preview</span></span>
+      <span>Local-first · Deterministic · Human-reviewed</span>
+      <a href="https://github.com/BeyondSpace1/VulnScribe" target="_blank" rel="noopener noreferrer">Repository ↗</a>
+    </footer>
+  </main>
+</body>
+</html>

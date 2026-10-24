@@ -13,7 +13,7 @@ def test_health_endpoint_returns_service_metadata():
     assert response.json() == {
         "status": "ok",
         "service": "vulnscribe",
-        "version": "0.1.0",
+        "version": "0.2.0a1",
     }
 
 
